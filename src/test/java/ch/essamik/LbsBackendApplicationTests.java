@@ -12,7 +12,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 public class LbsBackendApplicationTests {
 
 	@Test
-	public void contextLoads() {
-	}
+	public void contextLoads() {}
 
 }
