@@ -32,6 +32,4 @@ public class LbsBackendApplication {
 			repository.save(new Beacon("ProximitySensor", "86690f51-4b60-4fa2-a4d4-5520745acc4a", 1 ,2));
 		};
 	}
-
-
 }

@@ -1,5 +1,6 @@
-package ch.essamik;
+package ch.essamik.controller;
 
+import ch.essamik.LbsBackendApplication;
 import ch.essamik.model.Beacon;
 import ch.essamik.repositories.BeaconRepository;
 import com.google.gson.Gson;
