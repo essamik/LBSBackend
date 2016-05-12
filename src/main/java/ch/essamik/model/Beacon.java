@@ -29,11 +29,24 @@ public class Beacon implements Serializable {
     //Default constructor for JPA
     public Beacon() {}
 
+    public Beacon (Beacon b) {
+        this.id = b.id;
+        this.name = b.name;
+        this.uuid = b.uuid;
+        this.major = b.major;
+        this.minor = b.minor;
+        this.vendorId = b.vendorId;
+    }
+
     public Beacon(String name, String uuid, int major, int minor) {
-        this.name = name;
-        this.uuid = uuid;
-        this.major = major;
-        this.minor = minor;
+        this.setName(name);
+        this.setUuid(uuid);
+        this.setMajor(major);
+        this.setMinor(minor);
+    }
+
+    public Long getId() {
+        return this.id;
     }
 
     public String getVendorId() {
@@ -54,5 +67,25 @@ public class Beacon implements Serializable {
 
     public int getMinor() {
         return this.minor;
+    }
+
+    public void setVendorId(String vendorId) {
+        this.vendorId = vendorId;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public void setMajor(int major) {
+        this.major = major;
+    }
+
+    public void setMinor(int minor) {
+        this.minor = minor;
     }
 }

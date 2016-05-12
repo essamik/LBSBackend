@@ -5,10 +5,9 @@ import ch.essamik.repositories.BeaconRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * REST endpoint for Beacon
@@ -33,23 +32,29 @@ public class BeaconController {
             return foundBeacon;
         }
         else {
-            log.info("No beacon found");
-            throw new Exception("No beacon found");
+            log.info("No object found");
+            throw new Exception("No object found");
         }
     }
 
-    /**
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handleAppException(Exception ex) {
-        return ex.getMessage();
+    @RequestMapping(method = RequestMethod.GET)
+    public List<Beacon> getAll() throws Exception {
+        return beaconRepository.findAll();
     }
-     */
 
-    /**
-    @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Object not found")
-    public class ObjectNotFoundException extends RuntimeException
-    {}
+    @RequestMapping(method = RequestMethod.POST)
+    public Beacon create(@RequestBody Beacon beacon) throws Exception {
+        boolean exist = beacon.getId() != null && beaconRepository.exists(beacon.getId());
 
-*/
+        if (exist) throw new Exception("Object already exist");
+        else return beaconRepository.save(beacon);
+    }
+
+    @RequestMapping(method = RequestMethod.PUT)
+    public Beacon update(@RequestBody Beacon beacon) throws Exception {
+        boolean exist = beacon.getId() != null && beaconRepository.exists(beacon.getId());
+
+        if (exist) return beaconRepository.save(beacon);
+        else throw new Exception("Object not existing");
+    }
 }
