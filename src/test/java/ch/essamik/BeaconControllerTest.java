@@ -2,6 +2,7 @@ package ch.essamik;
 
 import ch.essamik.model.Beacon;
 import ch.essamik.repositories.BeaconRepository;
+import com.google.gson.Gson;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,11 +16,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.Charset;
 
-import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -35,6 +34,8 @@ public class BeaconControllerTest {
     private WebApplicationContext webApplicationContext;
 
     private MockMvc mockMvc;
+    private Gson gson = new Gson();
+
 
     private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype(),
@@ -61,6 +62,23 @@ public class BeaconControllerTest {
     }
 
     @Test
+    public void getAllBeacons() throws Exception {
+        mockMvc.perform(get("/beacons/"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(contentType))
+                .andExpect(jsonPath("$", hasSize(5)));
+    }
+
+    @Test
+    public void removeAllBeacons() throws Exception {
+        this.beaconRepository.deleteAll();
+        mockMvc.perform(get("/beacons/"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(contentType))
+                .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    @Test
     public void getBeaconByName() throws Exception {
         mockMvc.perform(get("/beacons/" + beacon101.getName()))
                 .andExpect(status().isOk())
@@ -75,5 +93,47 @@ public class BeaconControllerTest {
     public void getUnknownBeaconByName() throws Exception {
         mockMvc.perform(get("/beacons/" + "UKNW Beacon"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void updateBeacon() throws Exception {
+        Beacon beaconToUpdate = beaconRepository.findByName(this.beacon103.getName());
+
+        beaconToUpdate.setName("Updated Beacon");
+        beaconToUpdate.setVendorId("A104");
+
+        String jsonBeacon = gson.toJson(beaconToUpdate);
+
+        mockMvc.perform(put("/beacons/")
+                .content(jsonBeacon)
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(contentType))
+                .andExpect(jsonPath("$.name", is(beaconToUpdate.getName())))
+                .andExpect(jsonPath("$.vendorId", is(beaconToUpdate.getVendorId())))
+                .andExpect(jsonPath("$.uuid", is(beaconToUpdate.getUuid())))
+                .andExpect(jsonPath("$.major", is(beaconToUpdate.getMajor())))
+                .andExpect(jsonPath("$.minor", is(beaconToUpdate.getMinor())));
+    }
+
+    @Test
+    public void createBeacon() throws Exception {
+        Beacon beaconToCreate = new Beacon("New beacon", "8661af32-4b60-4712-a4d4-5520745bdd", 1231, 12312);
+        beaconToCreate.setVendorId("AAAA");
+
+        String jsonBeacon = gson.toJson(beaconToCreate);
+
+        mockMvc.perform(post("/beacons")
+                .content(jsonBeacon)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(contentType))
+                .andExpect(jsonPath("$.id", notNullValue()))
+                .andExpect(jsonPath("$.name", is(beaconToCreate.getName())))
+                .andExpect(jsonPath("$.vendorId", is(beaconToCreate.getVendorId())))
+                .andExpect(jsonPath("$.uuid", is(beaconToCreate.getUuid())))
+                .andExpect(jsonPath("$.major", is(beaconToCreate.getMajor())))
+                .andExpect(jsonPath("$.minor", is(beaconToCreate.getMinor())));
     }
 }
