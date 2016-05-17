@@ -1,4 +1,8 @@
 package ch.essamik.repositories;
 
-public class GeofenceRepository {
+import ch.essamik.model.Geofence;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface GeofenceRepository extends JpaRepository<Geofence,Long> {
+    Geofence findByName(String name);
 }
