@@ -4,6 +4,8 @@ package ch.essamik.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -16,8 +18,16 @@ public class Geofence implements Serializable{
 
     @NotNull
     private String name;
+
+    @Min(-90)
+    @Max(90)
     private double latitude;
+
+    @Min(-180)
+    @Max(180)
     private double longitude;
+
+    @Min(100)
     private float radius;
 
     public Geofence(Geofence geofence){

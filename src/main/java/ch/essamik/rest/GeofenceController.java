@@ -64,10 +64,15 @@ public class GeofenceController {
     }
 
     @RequestMapping(method = RequestMethod.PUT)
-    public Geofence update(@RequestBody Geofence geofence) throws Exception{
-        boolean exist = geofence.getId() != null && geofenceRepository.exists(geofence.getId());
-
-        if(exist)return geofenceRepository.save(geofence);
-        else throw new Exception("Object not existing");
+    public Geofence update(@Valid @RequestBody Geofence geofence, BindingResult bindingResult) throws Exception {
+        if (bindingResult.hasErrors()) {
+            List<FieldError> fieldErrorList = bindingResult.getFieldErrors();
+            String errorMessage = buildErrorMessage(fieldErrorList);
+            throw new WrongAttributeException(errorMessage);
+        } else {
+            boolean exist = geofence.getId() != null && geofenceRepository.exists(geofence.getId());
+            if (exist) return geofenceRepository.save(geofence);
+            else throw new Exception("Object not existing");
+        }
     }
 }

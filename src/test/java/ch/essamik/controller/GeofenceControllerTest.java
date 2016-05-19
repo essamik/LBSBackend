@@ -51,11 +51,8 @@ public class GeofenceControllerTest {
 
     @Before
     public void setup() throws Exception{
-
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
-
         this.geofenceRepository.deleteAll();
-
         this.geofenceRepository.save(geofenceArea1);
         this.geofenceRepository.save(geofenceArea2);
         this.geofenceRepository.save(geofenceArea3);
@@ -125,7 +122,7 @@ public class GeofenceControllerTest {
     }
 
     @Test
-    public void createGeofenceWithWithoutAttributeName() throws Exception{
+    public void createGeofenceWithoutAttributeName() throws Exception{
         Geofence geofence = new Geofence("New Geofence",29.39,40.40,500F);
 
         JsonObject jsonGeofence = gson.toJsonTree(geofence).getAsJsonObject();
@@ -133,6 +130,56 @@ public class GeofenceControllerTest {
 
         mockMvc.perform(post(BASE_ROUTE)
                 .content(gson.toJson(jsonGeofence))
+                .contentType(contentType))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void createGeofenceWithInvalidLatitudeMax() throws Exception{
+        Geofence geofence = new Geofence("New Geofence",91.00,40.40,500F);
+
+        mockMvc.perform(post(BASE_ROUTE)
+                .content(gson.toJson(geofence))
+                .contentType(contentType))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void createGeofenceWithInvalidLatitudeMin() throws Exception{
+        Geofence geofence = new Geofence("New Geofence",-91.00,40.40,500F);
+
+        mockMvc.perform(post(BASE_ROUTE)
+                .content(gson.toJson(geofence))
+                .contentType(contentType))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void createGeofenceWithInvalidLongitudeMax() throws Exception{
+        Geofence geofence = new Geofence("New Geofence",-49.00,181.40,500F);
+
+        mockMvc.perform(post(BASE_ROUTE)
+                .content(gson.toJson(geofence))
+                .contentType(contentType))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void createGeofenceWithInvalidLongitudeMin() throws Exception{
+        Geofence geofence = new Geofence("New Geofence",10.00,-181.40,500F);
+
+        mockMvc.perform(post(BASE_ROUTE)
+                .content(gson.toJson(geofence))
+                .contentType(contentType))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void createGeofenceWithInvalidRadius() throws Exception{
+        Geofence geofence = new Geofence("New Geofence",-89.00,100.40,99F);
+
+        mockMvc.perform(post(BASE_ROUTE)
+                .content(gson.toJson(geofence))
                 .contentType(contentType))
                 .andExpect(status().isBadRequest());
     }
