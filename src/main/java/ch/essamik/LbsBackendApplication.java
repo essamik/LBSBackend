@@ -4,14 +4,20 @@ import ch.essamik.model.Beacon;
 import ch.essamik.model.Geofence;
 import ch.essamik.repositories.BeaconRepository;
 import ch.essamik.repositories.GeofenceRepository;
+import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.solr.core.SolrTemplate;
+import org.springframework.data.solr.repository.config.EnableSolrRepositories;
 
 @SpringBootApplication
+@EnableSolrRepositories(basePackages={"ch.essamik.repositories"}, multicoreSupport=true)
 public class LbsBackendApplication {
 
 	private static final Logger log = LoggerFactory.getLogger(LbsBackendApplication.class);
@@ -19,6 +25,17 @@ public class LbsBackendApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(LbsBackendApplication.class, args);
 	}
+
+	@Bean
+	public SolrServer solrServer(@Value("${solr.host}") String solrHost) {
+		return new HttpSolrServer(solrHost);
+	}
+
+	@Bean
+	public SolrTemplate solrTemplate(SolrServer server) throws Exception {
+		return new SolrTemplate(server);
+	}
+
 
 	/**
 	 * Populating the database with examples objects
