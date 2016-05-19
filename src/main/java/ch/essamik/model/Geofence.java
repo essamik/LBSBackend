@@ -4,6 +4,7 @@ package ch.essamik.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
@@ -13,6 +14,7 @@ public class Geofence implements Serializable{
     @GeneratedValue
     private Long id;
 
+    @NotNull
     private String name;
     private double latitude;
     private double longitude;
