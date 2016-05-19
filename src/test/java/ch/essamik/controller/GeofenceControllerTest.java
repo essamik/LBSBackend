@@ -4,6 +4,7 @@ import ch.essamik.LbsBackendApplication;
 import ch.essamik.model.Geofence;
 import ch.essamik.repositories.GeofenceRepository;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -121,5 +122,18 @@ public class GeofenceControllerTest {
                 .andExpect(jsonPath("$.latitude", Matchers.is(geofenceToUpdate.getLatitude())))
                 //TODO Check for better solution to test this
                 .andExpect(jsonPath("$.radius", is(500.0)));
+    }
+
+    @Test
+    public void createGeofenceWithWithoutAttributeName() throws Exception{
+        Geofence geofence = new Geofence("New Geofence",29.39,40.40,500F);
+
+        JsonObject jsonGeofence = gson.toJsonTree(geofence).getAsJsonObject();
+        jsonGeofence.remove("name");
+
+        mockMvc.perform(post(BASE_ROUTE)
+                .content(gson.toJson(jsonGeofence))
+                .contentType(contentType))
+                .andExpect(status().isBadRequest());
     }
 }
