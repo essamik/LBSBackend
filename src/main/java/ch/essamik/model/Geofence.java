@@ -2,31 +2,23 @@ package ch.essamik.model;
 
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import java.io.Serializable;
 
 @Entity
-public class Geofence implements Serializable{
+public class Geofence extends Base implements Serializable{
 
-    @Id
-    @GeneratedValue
-    private Long id;
-
-    private String name;
     private double latitude;
     private double longitude;
     private float radius;
 
     public Geofence(Geofence geofence){
-        this.name = geofence.name;
         this.latitude = geofence.latitude;
         this.longitude = geofence.longitude;
         this.radius = geofence.radius;
     }
 
     public Geofence(String name, double latitude, double longitude, float radius) {
-        this.name = name;
+        super.setName(name);
         this.latitude = latitude;
         this.longitude = longitude;
         this.radius = radius;
@@ -34,18 +26,6 @@ public class Geofence implements Serializable{
 
     //Default constructor for JPA
     public Geofence() {}
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public double getLatitude() {
         return latitude;

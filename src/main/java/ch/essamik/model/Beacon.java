@@ -1,8 +1,6 @@
 package ch.essamik.model;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import java.io.Serializable;
 
 /**
@@ -10,15 +8,9 @@ import java.io.Serializable;
  */
 
 @Entity
-public class Beacon implements Serializable {
-
-    @Id
-    @GeneratedValue
-    private Long id;
+public class Beacon extends Base implements Serializable {
 
     private String vendorId;
-
-    private String name;
 
     private String uuid;
 
@@ -30,8 +22,7 @@ public class Beacon implements Serializable {
     public Beacon() {}
 
     public Beacon (Beacon b) {
-        this.id = b.id;
-        this.name = b.name;
+        super(b);
         this.uuid = b.uuid;
         this.major = b.major;
         this.minor = b.minor;
@@ -39,22 +30,14 @@ public class Beacon implements Serializable {
     }
 
     public Beacon(String name, String uuid, int major, int minor) {
-        this.setName(name);
+        super.setName(name);
         this.setUuid(uuid);
         this.setMajor(major);
         this.setMinor(minor);
     }
 
-    public Long getId() {
-        return this.id;
-    }
-
     public String getVendorId() {
         return this.vendorId;
-    }
-
-    public String getName() {
-        return this.name;
     }
 
     public String getUuid() {
@@ -71,10 +54,6 @@ public class Beacon implements Serializable {
 
     public void setVendorId(String vendorId) {
         this.vendorId = vendorId;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public void setUuid(String uuid) {
