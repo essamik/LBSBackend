@@ -13,7 +13,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.data.solr.repository.config.EnableSolrRepositories;
 
 @SpringBootApplication
@@ -30,12 +29,6 @@ public class LbsBackendApplication {
 	public SolrServer solrServer(@Value("${solr.host}") String solrHost) {
 		return new HttpSolrServer(solrHost);
 	}
-
-	@Bean
-	public SolrTemplate solrTemplate(SolrServer server) throws Exception {
-		return new SolrTemplate(server);
-	}
-
 
 	/**
 	 * Populating the database with examples objects
