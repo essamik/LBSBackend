@@ -17,14 +17,20 @@ public class Discovery implements Serializable {
     @Field
     private String id;
 
-    @Field
+    @Field("emitterId_s")
     private String emitterId;
 
-    @Field
+    @Field("emitterName_s")
+    private String emitterName;
+
+    @Field("created_dt")
     private Date created;
 
+    @Field("tags_ss")
+    private String[] tags;
+
+    @Field("event_s")
     @Enumerated(EnumType.STRING)
-    @Field
     private DiscoverEvent event;
 
     public enum DiscoverEvent {
@@ -36,8 +42,9 @@ public class Discovery implements Serializable {
     public Discovery() {
     }
 
-    public Discovery(String emitterId, DiscoverEvent event) {
+    public Discovery(String emitterId, String emitterName, DiscoverEvent event) {
         this.setEmitterId(emitterId);
+        this.setEmitterName(emitterName);
         this.setEvent(event);
         this.id = UUID.randomUUID().toString();
         this.setCreated(new Date());
@@ -53,6 +60,23 @@ public class Discovery implements Serializable {
 
     public void setEmitterId(String emitterId) {
         this.emitterId = emitterId;
+    }
+
+
+    public String getEmitterName() {
+        return emitterName;
+    }
+
+    public void setEmitterName(String emitterName) {
+        this.emitterName = emitterName;
+    }
+
+    public String[] getTags() {
+        return tags;
+    }
+
+    public void setTags(String[] tags) {
+        this.tags = tags;
     }
 
     public Date getCreated() {
